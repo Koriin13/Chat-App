@@ -2,8 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose')
 const { Socket } = require("socket.io");
 const User = require('./models/User');
-const privateMessage = require('./models/PrivateMessage');
-const GroupMessage = require('./models/GroupMessage');
+const Message = require('./models/Message');
 const cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser')
 
@@ -105,22 +104,22 @@ app.post('/login', async(req, res) => {
 
 
 // Global message
-app.get('/groupMessages', (req, res) => {
-    GroupMessage.find({}, (err, messages) => {
+app.get('/messages', (req, res) => {
+    Message.find({}, (err, messages) => {
         console.log(messages)
         res.send(messages);
     })
 })
 
 
-app.post('/groupMessages', (req, res) => {
+app.post('/messages', (req, res) => {
     console.log("This is the request body", req.body)
     const msg = {
         from_user: req.body.username,
         room: req.body.room,
         message: req.body.message
     }
-    var message = new GroupMessage(msg);
+    var message = new Message(msg);
     message.save((err) => {
         if (err) {
             console.log(err)
@@ -168,12 +167,12 @@ io.on('connection', (socket) => {
         console.log(`${data.username} sent a message to ${data.room}`)
 
         // Add message to db
-        const dbGroupMessage = new GroupMessage({
+        const dbMessage = new Message({
             from_user: data.username,
             room: data.room,
             message: data.message
         })
-        dbGroupMessage.save()
+        dbMessage.save()
 
         socket.broadcast.to(data.room).emit('newMessage', message)
     })
