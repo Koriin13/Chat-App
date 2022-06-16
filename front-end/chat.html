@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<base href="/">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Chat</title>
+
+    <!-- Styles -->
+    <link src="assets/style.css" rel="stylesheet"/>
+
+
+    <script src="/socket.io/socket.io.js">
+    </script>
+
+</head>
+
+<body class="text-center">
+    <!--Main client-->
+    <h5 id="rName">Room name goes here</h5>
+    <header>Header</header>
+
+    <div id="userList">
+        <h4>User List</h4>
+    </div>
+    <button>Exit</button>
+    <div id="messageBox">
+        <h4>Message Box</h4>
+    </div>
+    <input type="text" />
+    <button>Send</button>
+
+    <footer>Footer</footer>
+
+</body>
+
+<script>
+    username = getCookie('username')
+    room = getCookie('room')
+
+    // Set room name
+    document.getElementById('rName').innerHTML = room
+
+
+    // Username Validation
+    if (username == '') {
+        console.log('user not logged in')
+        window.location.replace("http://localhost:3001/")
+    }
+
+    const client = io()
+
+    client.on('welcome', (message) => {
+        addMessage(message)
+    })
+
+    client.on('newMessage', (message) => {
+        addMessage(message)
+    })
+
+    // Send message to selected room
+    function sendMessage() {
+        message = document.getElementById('roomMessage').value
+
+        if (message != '') {
+            var roomName = document.getElementById('roomName').innerHTML
+            messageSend = {
+                room: roomName,
+                message: message,
+                username: username
+            }
+            console.log("Message send" + messageSend)
+            client.emit('messageRoom', messageSend)
+            addMessage(messageSend)
+            message.value = ''
+        }
+    }
+
+    function addMessage(message) {
+        document.getElementById('message-container').innerHTML += `<div> ${message.username}: ${message.message} </div>`
+    }
+
+    function getMessages() {
+        $.get('/groupMessages', (msg) => {
+            console.log(msg)
+            msg.forEach(addMessage);
+        })
+    }
+
+
+    function join() {
+        let roomNameH = document.getElementById('roomName')
+        let roomNameDropdown = document.getElementById('rooms')
+        let roomName = roomNameDropdown.options[roomNameDropdown.selectedIndex].value
+        roomNameH.innerHTML = roomName
+        client.emit('joinRoom', roomName)
+    }
+
+    function getCookie(cookieName) {
+        console.log(cookieName)
+        let name = cookieName + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+</script>
+
+</html>

@@ -2,16 +2,15 @@ var express = require('express');
 var mongoose = require('mongoose')
 const { Socket } = require("socket.io");
 const User = require('./models/User');
-const Message = require('./models/Message');
+const ChatMessage = require('./models/Message');
 const cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser')
-
 var app = express();
 app.use(express.json());
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-app.use(express.static(__dirname));
+express.static(__dirname)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -30,11 +29,11 @@ app.get('/', function(req, res) {
 })
 
 app.get('/login', function(req, res) {
-    res.sendFile(__dirname + '/front-end/index.html');
+    res.sendFile(__dirname + '/font-end/index.html');
 })
 
 // Connection string
-var dbUrl = 'mongodb+srv://kg:blah@a2cluster.g2h4x.mongodb.net/chat?retryWrites=true&w=majority'
+var dbUrl = 'mongodb+srv://kg:blah@a2cluster.g2h4x.mongodb.net/SimpleChat?retryWrites=true&w=majority'
 
 
 app.get('/messages', (req, res) => {
@@ -74,6 +73,7 @@ app.post('/register', async(req, res) => {
             firstname: req.body.firstname,
             lastname: req.body.lastname
         })
+
         dbUser.save()
         res.writeHead(301, { Location: 'http://localhost:3001' });
         res.end();
@@ -81,19 +81,20 @@ app.post('/register', async(req, res) => {
 })
 
 // Login
-app.get('/rooms', function(req, res) {
-    res.sendFile(__dirname + '/front-end/rooms.html');
+app.get('/chat', function(req, res) {
+    res.sendFile(__dirname + '/front-end/chat.html');
 });
 
 app.post('/login', async(req, res) => {
     if (req != null && req.body != null) {
         const user = await User.findOne({ username: req.body.username })
+        const roomName = req.body.room
         if (user.password == req.body.password) {
-            
-            // Set username and room name as cookies
             res.cookie('username', user.username)
             res.cookie('room', roomName)
-            res.writeHead(301, { Location: `http://localhost:3001/rooms` })
+            console.log(user.username)
+
+            res.writeHead(301, { Location: `http://localhost:3001/chat` })
             res.end();
         }
     } else {
@@ -104,22 +105,22 @@ app.post('/login', async(req, res) => {
 
 
 // Global message
-app.get('/messages', (req, res) => {
-    Message.find({}, (err, messages) => {
+app.get('/chatMessages', (req, res) => {
+    ChatMessage.find({}, (err, messages) => {
         console.log(messages)
         res.send(messages);
     })
 })
 
 
-app.post('/messages', (req, res) => {
+app.post('/chatMessages', (req, res) => {
     console.log("This is the request body", req.body)
     const msg = {
         from_user: req.body.username,
         room: req.body.room,
         message: req.body.message
     }
-    var message = new Message(msg);
+    var message = new ChatMessage(msg);
     message.save((err) => {
         if (err) {
             console.log(err)
@@ -167,12 +168,12 @@ io.on('connection', (socket) => {
         console.log(`${data.username} sent a message to ${data.room}`)
 
         // Add message to db
-        const dbMessage = new Message({
+        const dbChatMessage = new ChatMessage({
             from_user: data.username,
             room: data.room,
             message: data.message
         })
-        dbMessage.save()
+        dbChatMessage.save()
 
         socket.broadcast.to(data.room).emit('newMessage', message)
     })
