@@ -6,11 +6,12 @@ const ChatMessage = require('./models/Message');
 const cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser')
 var app = express();
+const path = require('path')
 app.use(express.json());
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-express.static(__dirname)
+app.use(express.static(path.join(__dirname, '/front-end')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -21,16 +22,16 @@ var Message = mongoose.model('Message', {
     name: String,
     message: String
 })
-
+console.log(path.join(__dirname, '/front-end'))
 // Default route 
 
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/front-end/index.html');
-})
+// app.get('/', function(req, res) {
+//     res.sendFile(__dirname + 'index.html');
+// })
 
-app.get('/login', function(req, res) {
-    res.sendFile(__dirname + '/font-end/index.html');
-})
+// app.get('/login', function(req, res) {
+//     res.sendFile(__dirname + 'index.html');
+// })
 
 // Connection string
 var dbUrl = 'mongodb+srv://kg:blah@a2cluster.g2h4x.mongodb.net/SimpleChat?retryWrites=true&w=majority'
@@ -58,7 +59,7 @@ app.post('/messages', (req, res) => {
 
 // Registration
 app.get('/register', function(req, res) {
-    res.sendFile(__dirname + '/front-end/register.html');
+    res.sendFile(__dirname + 'register.html');
 })
 
 app.post('/register', async(req, res) => {
@@ -82,7 +83,7 @@ app.post('/register', async(req, res) => {
 
 // Login
 app.get('/chat', function(req, res) {
-    res.sendFile(__dirname + '/front-end/chat.html');
+    res.sendFile(__dirname + 'chat.html');
 });
 
 app.post('/login', async(req, res) => {
@@ -132,7 +133,7 @@ app.post('/chatMessages', (req, res) => {
 app.get('/logout', async(req, res) => {
     res.clearCookie('username')
     res.clearCookie('room')
-    res.sendFile(__dirname + '/front-end/index.html')
+    res.sendFile(__dirname + 'index.html')
 })
 
 // Socket connection
