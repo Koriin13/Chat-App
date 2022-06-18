@@ -10,8 +10,8 @@ const path = require('path')
 app.use(express.json());
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
-app.use(express.static(path.join(__dirname, '/front-end')));
+var mainDir = path.join(__dirname, '/front-end')
+app.use(express.static(mainDir));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -59,7 +59,7 @@ app.post('/messages', (req, res) => {
 
 // Registration
 app.get('/register', function(req, res) {
-    res.sendFile(__dirname + 'register.html');
+    res.sendFile(__dirname + '/register.html');
 })
 
 app.post('/register', async(req, res) => {
