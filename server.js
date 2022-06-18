@@ -22,16 +22,6 @@ var Message = mongoose.model('Message', {
     name: String,
     message: String
 })
-console.log(path.join(__dirname, '/front-end'))
-// Default route 
-
-// app.get('/', function(req, res) {
-//     res.sendFile(__dirname + 'index.html');
-// })
-
-// app.get('/login', function(req, res) {
-//     res.sendFile(__dirname + 'index.html');
-// })
 
 // Connection string
 var dbUrl = 'mongodb+srv://kg:blah@a2cluster.g2h4x.mongodb.net/SimpleChat?retryWrites=true&w=majority'

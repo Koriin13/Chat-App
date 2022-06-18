@@ -23,12 +23,25 @@
     <div id="userList">
         <h4>User List</h4>
     </div>
-    <button>Exit</button>
-    <div id="messageBox">
+
+    <!-- Log out Button -->
+    <form action="/logout" method="get">
+        <button class="btn btn-dark btn-block btn-lg" id="logout_btn" type="submit">Logout</button>
+    </form>
+
+    <!-- Chat Box -->
+    <div id="msgBox">
         <h4>Message Box</h4>
     </div>
-    <input type="text" />
-    <button>Send</button>
+
+    <!-- Message Input Box-->
+    <div>
+        <textarea type="text" id="roomMessage" value="" name="roomMessage"  class="form-control form-control-lg" ></textarea>
+        <button class="btn btn-dark btn-block btn-lg " id="send" onClick='sendMessage()'>Send message</button>
+    </div>
+ 
+
+    
 
     <footer>Footer</footer>
 
@@ -63,21 +76,34 @@
         message = document.getElementById('roomMessage').value
 
         if (message != '') {
-            var roomName = document.getElementById('roomName').innerHTML
+            roomName = getCookie('room')
             messageSend = {
                 room: roomName,
                 message: message,
                 username: username
             }
-            console.log("Message send" + messageSend)
             client.emit('messageRoom', messageSend)
             addMessage(messageSend)
-            message.value = ''
+
+
+          
         }
     }
 
+    function userList(name, room) {
+        // get all users connected to a room
+        
+    }
+
+        
     function addMessage(message) {
-        document.getElementById('message-container').innerHTML += `<div> ${message.username}: ${message.message} </div>`
+       // Clear message box
+        document.getElementById('roomMessage').value = " "
+
+        // add message to screen
+        document.getElementById('msgBox').innerHTML += `<div class="message"> ${message.username}: ${message.message} </div>`
+      
+        
     }
 
     function getMessages() {
@@ -88,14 +114,7 @@
     }
 
 
-    function join() {
-        let roomNameH = document.getElementById('roomName')
-        let roomNameDropdown = document.getElementById('rooms')
-        let roomName = roomNameDropdown.options[roomNameDropdown.selectedIndex].value
-        roomNameH.innerHTML = roomName
-        client.emit('joinRoom', roomName)
-    }
-
+    
     function getCookie(cookieName) {
         console.log(cookieName)
         let name = cookieName + "=";
@@ -112,6 +131,7 @@
         }
         return "";
     }
+    
 </script>
 
 </html>

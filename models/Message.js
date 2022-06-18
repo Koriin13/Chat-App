@@ -28,4 +28,4 @@ MessageSchema.pre('save', (next) => {
 })
 
 
-module.exports = mongoose.model("GroupMessage", MessageSchema);
+module.exports = mongoose.model("ChatMessage", MessageSchema);
