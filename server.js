@@ -59,7 +59,7 @@ app.post('/messages', (req, res) => {
 
 // Registration
 app.get('/register', function(req, res) {
-    res.sendFile(__dirname + '/register.html');
+    res.sendFile(mainDir + '/register.html');
 })
 
 app.post('/register', async(req, res) => {
@@ -83,7 +83,7 @@ app.post('/register', async(req, res) => {
 
 // Login
 app.get('/chat', function(req, res) {
-    res.sendFile(__dirname + 'chat.html');
+    res.sendFile(mainDir + '/chat.html');
 });
 
 app.post('/login', async(req, res) => {
@@ -133,7 +133,7 @@ app.post('/chatMessages', (req, res) => {
 app.get('/logout', async(req, res) => {
     res.clearCookie('username')
     res.clearCookie('room')
-    res.sendFile(__dirname + 'index.html')
+    res.sendFile(mainDir + '/index.html')
 })
 
 // Socket connection

@@ -1,11 +1,15 @@
-header {
-    background-color: rgb(201, 248, 232) !important;
+header, footer{
+    background-color: rgb(201, 248, 232);
 }
 
 
 #userList {
-    background-color:rgb(192, 172, 211) !important;
+    background-color:rgb(192, 172, 211);
+    min-height: 200px;
 }
 
-
+#messageBox {
+    background-color: rgb(204, 214, 247);
+    min-height: 200px;
+}
 
