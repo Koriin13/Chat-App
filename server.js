@@ -83,7 +83,11 @@ app.post('/login', async(req, res) => {
         if (user.password == req.body.password) {
             res.cookie('username', user.username)
             res.cookie('room', roomName)
-            console.log(user.username)
+                        
+            // socket connection
+        io.on("connection", socket => {
+                socket.join(roomName);
+              });
 
             res.writeHead(301, { Location: `http://localhost:3001/chat` })
             res.end();
