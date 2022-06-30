@@ -1,30 +1,21 @@
-var express = require('express');
+
 var mongoose = require('mongoose')
 const { Socket } = require("socket.io");
-const User = require('./models/User');
-const ChatMessage = require('./models/Message');
-const cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser')
-var app = express();
-const path = require('path')
-app.use(express.json());
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var mainDir = path.join(__dirname, '/front-end')
-app.use(express.static(mainDir));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+const User = require('./srv/models/User');
+const ChatMessage = require('./srv/models/Message');
 
-app.use(cookieParser())
 
-// Declare MongoDB Schemas
-var Message = mongoose.model('Message', {
-    name: String,
-    message: String
-})
 
-// Connection string
-var dbUrl = 'mongodb+srv://kg:blah@a2cluster.g2h4x.mongodb.net/SimpleChat?retryWrites=true&w=majority'
+
+
+// // Declare MongoDB Schemas
+// var Message = mongoose.model('Message', {
+//     name: String,
+//     message: String
+// })
+
+// // Connection string
+// var dbUrl = 'mongodb+srv://kg:blah@a2cluster.g2h4x.mongodb.net/SimpleChat?retryWrites=true&w=majority'
 
 
 app.get('/messages', (req, res) => {
@@ -48,28 +39,28 @@ app.post('/messages', (req, res) => {
 })
 
 // Registration
-app.get('/register', function(req, res) {
-    res.sendFile(mainDir + '/register.html');
-})
+// app.get('/register', function(req, res) {
+//     res.sendFile(mainDir + '/register.html');
+// })
 
-app.post('/register', async(req, res) => {
-    const takenUsername = await User.findOne({ username: req.body.username })
+// app.post('/register', async(req, res) => {
+//     const takenUsername = await User.findOne({ username: req.body.username })
 
-    if (takenUsername) {
+//     if (takenUsername) {
 
-    } else {
-        const dbUser = new User({
-            username: req.body.username,
-            password: req.body.password,
-            firstname: req.body.firstname,
-            lastname: req.body.lastname
-        })
+//     } else {
+//         const dbUser = new User({
+//             username: req.body.username,
+//             password: req.body.password,
+//             firstname: req.body.firstname,
+//             lastname: req.body.lastname
+//         })
 
-        dbUser.save()
-        res.writeHead(301, { Location: 'http://localhost:3001' });
-        res.end();
-    }
-})
+//         dbUser.save()
+//         res.writeHead(301, { Location: 'http://localhost:3001' });
+//         res.end();
+//     }
+// })
 
 // Login
 app.get('/chat', function(req, res) {
@@ -124,54 +115,49 @@ app.post('/chatMessages', (req, res) => {
 })
 
 // Logout route
-app.get('/logout', async(req, res) => {
-    res.clearCookie('username')
-    res.clearCookie('room')
-    res.sendFile(mainDir + '/index.html')
-})
 
 // Socket connection
-io.on('connection', (socket) => {
+// io.on('connection', (socket) => {
 
-    const joinMsg = {
-        msg: 'Welcome to the chatroom',
-        name: 'SERVER'
-    }
-    socket.emit('joinMsg', joinMsg)
+//     const joinMsg = {
+//         msg: 'Welcome to the chatroom',
+//         name: 'SERVER'
+//     }
+//     socket.emit('joinMsg', joinMsg)
 
-    socket.on('joinRoom', (room) => {
-        socket.join(room)
-    })
+//     socket.on('joinRoom', (room) => {
+//         socket.join(room)
+//     })
 
-    socket.on('sendMsg', (data) => {
-        const msg = {
-            msg: data.message,
-            name: data.username
-        }
-        socket.broadcast.to(data.room).emit('msg', msg)
-    })
+//     socket.on('sendMsg', (data) => {
+//         const msg = {
+//             msg: data.message,
+//             name: data.username
+//         }
+//         socket.broadcast.to(data.room).emit('msg', msg)
+//     })
 
-    socket.on("typing", () => {
-        socket.broadcast.emit("typing..", { user: socket.username })
-    })
+//     socket.on("typing", () => {
+//         socket.broadcast.emit("typing..", { user: socket.username })
+//     })
 
-    socket.on('messageRoom', (data) => {
-        const message = {
-            username: data.username,
-            message: data.message
-        }
-        console.log(`${data.username} sent a message to ${data.room}`)
+//     socket.on('messageRoom', (data) => {
+//         const message = {
+//             username: data.username,
+//             message: data.message
+//         }
+//         console.log(`${data.username} sent a message to ${data.room}`)
 
-        // Add message to db
-        const dbChatMessage = new ChatMessage({
-            from_user: data.username,
-            room: data.room,
-            message: data.message
-        })
-        dbChatMessage.save()
+//         // Add message to db
+//         const dbChatMessage = new ChatMessage({
+//             from_user: data.username,
+//             room: data.room,
+//             message: data.message
+//         })
+//         dbChatMessage.save()
 
-        socket.broadcast.to(data.room).emit('newMessage', message)
-    })
+//         socket.broadcast.to(data.room).emit('newMessage', message)
+//     })
 
     // disconnect
     socket.on("disconnect", () => {
@@ -186,13 +172,13 @@ io.on('connection', (socket) => {
 })
 
 // MongoDB connection
-mongoose.connect(dbUrl, { useUnifiedTopology: true, useNewUrlParser: true }, (err) => {
-    if (err) {
-        console.log('mongodb connected', err);
-    } else {
-        console.log('Successfully mongodb connected');
-    }
-})
+// mongoose.connect(dbUrl, { useUnifiedTopology: true, useNewUrlParser: true }, (err) => {
+//     if (err) {
+//         console.log('mongodb connected', err);
+//     } else {
+//         console.log('Successfully mongodb connected');
+//     }
+// })
 
 
 // Listen to port 3001
