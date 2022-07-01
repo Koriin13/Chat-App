@@ -29,7 +29,7 @@ chat.onStart = function (app) {
   const user = await User.findOne({ username: req.body.username })
   
   const roomName = req.body.room
-    if (user.user != username && ) {
+    if (user.user != username ) {
       return next(new Error("invalid username or room"));
     }
     socket.username = username;
@@ -81,7 +81,7 @@ function onConnection(socket) {
 function onJoinRoom(socket, room) {
   // If user is in another room, leave that room
   // then put the user in the new room
-    
+
     // JOIN ROOM
     socket.on('joinRoom', (room) => {
       socket.join(room)
