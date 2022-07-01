@@ -27,16 +27,14 @@ chat.onStart = function (app) {
   const username = socket.handshake.auth.username;
 
   const user = await User.findOne({ username: req.body.username })
-  
   const roomName = req.body.room
-    if (user.user != username ) {
+
+    if (user.username != username && !roomName) {
       return next(new Error("invalid username or room"));
     }
-    socket.username = username;
-    next();
-    // make sure a room name is given
-    // next(new Error("Failed for whatever reason"))
-    // next(); -> Success
+    socket.username = user;
+    next(redirect.chat());
+ 
   });
   // todo: setup middleware to validate username/password of users connecting
   chat.servers.io.on('connecion', onConnection);
@@ -56,7 +54,6 @@ function onConnection(socket) {
         socket.broadcast.to(data.room).emit('msg', msg)
     })
  
-
     socket.on('messageRoom', (data) => {
         const message = {
             username: data.username,
