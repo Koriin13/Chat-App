@@ -87,7 +87,7 @@ app.post('/login', async(req, res) => {
         res.writeHead(301, { Location: 'http://localhost:3001/' })
         res.end();
     }
-})
+}) 
 
 
 // Global message

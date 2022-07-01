@@ -19,12 +19,17 @@ const chat = {};
 chat.servers = {};
 
 chat.onStart = function (app) {
+  
   chat.servers.http = http.Server(app);
   chat.servers.io = socketio(chat.servers.http);
   chat.servers.io.use((socket, next) => {
-    const username = socket.handshake.auth.username;
-    // verify user/pass
-    if (!username) {
+
+  const username = socket.handshake.auth.username;
+
+  const user = await User.findOne({ username: req.body.username })
+  
+  const roomName = req.body.room
+    if (user.user != username && ) {
       return next(new Error("invalid username or room"));
     }
     socket.username = username;
@@ -42,8 +47,6 @@ function onConnection(socket) {
   const io = chat.servers.io;
 
   io.on('connection', (socket) => {
-
-
 
     socket.on('sendMsg', (data) => {
         const msg = {
@@ -78,10 +81,11 @@ function onConnection(socket) {
 function onJoinRoom(socket, room) {
   // If user is in another room, leave that room
   // then put the user in the new room
-  
+    
     // JOIN ROOM
     socket.on('joinRoom', (room) => {
       socket.join(room)
+      redirect.chat()
   })
 }
 
