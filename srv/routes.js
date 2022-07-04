@@ -1,10 +1,10 @@
 const { Router } = require('express')
 const { router } = Router();
+const mongoose = require('mongoose')
+const User = require('./models/User');
+const ChatMessage = require('./models/Message');
 
-const User = require('./srv/models/User');
-const ChatMessage = require('./srv/models/Message');
 
-// Login
 
 // Declare MongoDB Schemas
 var Message = mongoose.model('Message', {
