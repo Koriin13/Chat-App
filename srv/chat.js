@@ -4,15 +4,19 @@ const http = require('http');
 // Server sided chat features
 
 
-// Declare MongoDB Schemas
-var Message = mongoose.model('Message', {
-  name: String,
-  message: String
-})
+
 
 // Connection string
 var dbUrl = 'mongodb+srv://kg:blah@a2cluster.g2h4x.mongodb.net/SimpleChat?retryWrites=true&w=majority'
 
+// MongoDB connection
+mongoose.connect(dbUrl, { useUnifiedTopology: true, useNewUrlParser: true }, (err) => {
+    if (err) {
+        console.log('mongodb connected', err);
+    } else {
+        console.log('Successfully mongodb connected');
+    }
+})
 
 const chat = {};
 
@@ -26,9 +30,7 @@ chat.onStart = function (app) {
 
   const username = socket.handshake.auth.username;
 
-  const user = await User.findOne({ username: req.body.username })
-  const roomName = req.body.room
-
+ 
     if (user.username != username && !roomName) {
       return next(new Error("invalid username or room"));
     }
@@ -37,7 +39,7 @@ chat.onStart = function (app) {
  
   });
   // todo: setup middleware to validate username/password of users connecting
-  chat.servers.io.on('connecion', onConnection);
+  chat.servers.io.on('connetion', onConnection);
 };
 
 function onConnection(socket) {
@@ -96,5 +98,6 @@ function onTyping(socket,) {
 function listUsers(socket) {
   
 }
+
 
 module.exports = chat;

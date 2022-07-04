@@ -2,12 +2,12 @@
   "name": "chat-app",
   "version": "1.0.0",
   "description": "React Socket.io Chat",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Korin G.",
+  "author": "Korin",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.0",
