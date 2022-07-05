@@ -1,9 +1,9 @@
 const redirect = {}
 
 redirect.index = function (res) {
-    res.redirect('/')
+  res.redirect('/')
 }
 
 redirect.chat = function (res) {
-    res.redirect('/chat.html')
+  res.redirect('/chat.html')
 }

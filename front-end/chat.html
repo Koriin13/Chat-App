@@ -1,140 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <base href="/">
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Chat</title>
+  <base href="/">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat</title>
 
-    <!-- Styles -->
-    <link href="assets/style.css" rel="stylesheet"/>
+  <!-- Styles -->
+  <link href="assets/style.css" rel="stylesheet" />
 
 
-    <script src="/socket.io/socket.io.js">
-    </script>
+  <script src="/socket.io/socket.io.js">
+  </script>
 
 </head>
 
 <body class="text-center">
-    <!--Main client-->
-    <h5 id="rName">Room name goes here</h5>
-    <header>Header</header>
 
-    <div id="userList">
-        <h4>User List</h4>
-    </div>
+  <!--Main client-->
+  <h5 id="rName">Room name goes here</h5>
+  <header>Header</header>
 
-    <!-- Log out Button -->
-    <form action="/logout" method="get">
-        <button class="btn btn-dark btn-block btn-lg" id="logout_btn" type="submit">Logout</button>
-    </form>
+  <div id="userList">
+    <h4>User List</h4>
+  </div>
 
-    <!-- Chat Box -->
-    <div id="msgBox">
-        <h4>Message Box</h4>
-        <div id="list"></div>
-    </div>
+  <!-- Log out Button -->
+  <form action="/logout" method="get">
+    <button class="btn btn-dark btn-block btn-lg" id="logout_btn" type="submit">Logout</button>
+  </form>
 
-    <!-- Message Input Box-->
-    <div>
-        <textarea type="text" id="roomMessage" value="" name="roomMessage"  class="form-control form-control-lg" ></textarea>
-        <button class="btn btn-dark btn-block btn-lg " id="send" onClick='sendMessage()'>Send message</button>
-    </div>
- 
+  <!-- Chat Box -->
+  <div id="msgBox">
+    <h4>Message Box</h4>
+    <div id="list"></div>
+  </div>
 
-    
+  <!-- Message Input Box-->
+  <div>
+    <textarea type="text" id="roomMessage" value="" name="roomMessage" class="form-control form-control-lg"></textarea>
+    <button class="btn btn-dark btn-block btn-lg " id="send" onClick='sendMessage()'>Send message</button>
+  </div>
 
-    <footer>Footer</footer>
+  <footer>Footer</footer>
 
-</body>
+  <script>
+    const loggedIn = false;
 
-<script>
-    username = getCookie('username')
-    room = getCookie('room')
-    userList()
+    // username = getCookie('username')
+    // room = getCookie('room')
+    // userList()
 
-    // Set room name
-    document.getElementById('rName').innerHTML = room
+    // // Set room name
+    // document.getElementById('rName').innerHTML = room
 
 
-    // Username Validation
-    if (username == '') {
-        console.log('user not logged in')
-        window.location.replace("http://localhost:3001/")
-    }
+    // // Username Validation
+    // if (username == '') {
+    //   console.log('user not logged in')
+    //   window.location.replace("http://localhost:3001/")
+    // }
 
-    const client = io()
+    // const client = io()
 
-    client.on('welcome', (message) => {
-        addMessage(message)
-    })
+    // client.on('welcome', (message) => {
+    //   addMessage(message)
+    // })
 
-    client.on('newMessage', (message) => {
-        addMessage(message)
-    })
+    // client.on('newMessage', (message) => {
+    //   addMessage(message)
+    // })
 
-    // Send message to selected room
-    function sendMessage() {
-        message = document.getElementById('roomMessage').value
+    // // Send message to selected room
+    // function sendMessage() {
+    //   message = document.getElementById('roomMessage').value
 
-        if (message != '') {
-            roomName = getCookie('room')
-            messageSend = {
-                room: roomName,
-                message: message,
-                username: username
-            }
-            client.emit('messageRoom', messageSend)
-            addMessage(messageSend)
+    //   if (message != '') {
+    //     roomName = getCookie('room')
+    //     messageSend = {
+    //       room: roomName,
+    //       message: message,
+    //       username: username
+    //     }
+    //     client.emit('messageRoom', messageSend)
+    //     addMessage(messageSend)
 
 
-          
-        }
-    }
 
-    function userList(name, room) {
-        // get all users connected to a room
-        document.getElementById('list').innerHTML += `<div class="user"> ${username}</div>`
-        
-    }
+    //   }
+    // }
 
-        
-    function addMessage(message) {
-       // Clear message box
-        document.getElementById('roomMessage').value = " "
+    // function userList(name, room) {
+    //   // get all users connected to a room
+    //   document.getElementById('list').innerHTML += `<div class="user"> ${username}</div>`
 
-        // add message to screen
-        document.getElementById('msgBox').innerHTML += `<div class="message"> ${message.username}: ${message.message} </div>`
-      
-        
-    }
+    // }
+
+
+    // function addMessage(message) {
+    //   // Clear message box
+    //   document.getElementById('roomMessage').value = " "
+
+    //   // add message to screen
+    //   document.getElementById('msgBox').innerHTML += `<div class="message"> ${message.username}: ${message.message} </div>`
+
+
+    // }
 
     function getMessages() {
-        $.get('/groupMessages', (msg) => {
-            console.log(msg)
-            msg.forEach(addMessage);
-        })
+      $.get('/groupMessages', (msg) => {
+        console.log(msg)
+        msg.forEach(addMessage);
+      })
     }
 
 
-    
+
     function getCookie(cookieName) {
-        console.log(cookieName)
-        let name = cookieName + "=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
+      console.log(cookieName)
+      let name = cookieName + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
         }
-        return "";
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
     }
-    
-</script>
+
+  </script>
+
+</body>
 
 </html>
