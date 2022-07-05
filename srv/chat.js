@@ -1,22 +1,8 @@
 const socketio = require('socket.io');
 const http = require('http');
-const mongoose = require('mongoose')
+
 // Server sided chat features
 
-
-
-
-// Connection string
-var dbUrl = 'mongodb+srv://kg:blah@a2cluster.g2h4x.mongodb.net/SimpleChat?retryWrites=true&w=majority'
-
-// MongoDB connection
-mongoose.connect(dbUrl, { useUnifiedTopology: true, useNewUrlParser: true }, (err) => {
-    if (err) {
-        console.log('mongodb connected', err);
-    } else {
-        console.log('Successfully mongodb connected');
-    }
-})
 
 const chat = {};
 

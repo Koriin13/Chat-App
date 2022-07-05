@@ -14,7 +14,7 @@ var Message = mongoose.model('Message', {
 
 // Registration
 
-router.post('/register', async(req, res) => {
+router.post('/register', (req, res) => {
     const takenUsername = await User.findOne({ username: req.body.username })
 
     if (takenUsername) {
@@ -42,7 +42,7 @@ router.get('/messages', (req, res) => {
 )
 
 // Login
-router.post('/login', async(req, res) => {
+router.post('/login', (req, res) => {
     if (req != null && req.body != null) {
         const user = await User.findOne({ username: req.body.username })
         const roomName = req.body.room
