@@ -1,8 +1,13 @@
-const socketio = require('socket.io');
 const http = require('http');
 const User = require('./models/User');
 
 // Server sided chat features
+
+
+
+
+
+const socketio = require('socket.io');
 
 const chat = {};
 
@@ -16,6 +21,7 @@ chat.onStart = function (app) {
     const auth = socket.handshake.auth;
     const username = auth.username;
     const password = auth.password;
+    
 
     const user = await User.findOne({ username: username });
     if (user.password == password) {
